@@ -47,8 +47,8 @@ public class TableServiceImplTest {
 	private List<String> extractedKeyValueArrayList;
 	private List<String> keyArrayList;
 	private List<String> valueArrayList;
-	private Map<String, List<String>> map;
-	private List<Integer> dim;
+	private Map<String, List<String>> keyValueMap;
+	private List<Integer> dimension;
 	
 	private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -61,15 +61,15 @@ public class TableServiceImplTest {
 		extractedKeyValueArrayList = new ArrayList<String>(Arrays.asList("abc:def","ABC:DEF","123:456"));
 		keyArrayList = new ArrayList<String>(Arrays.asList("abc","ABC","123"));
 	    valueArrayList = new ArrayList<String>(Arrays.asList("def","DEF","456"));
-		map = new LinkedHashMap<String, List<String>>();
+		keyValueMap = new LinkedHashMap<String, List<String>>();
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
-		dim = new ArrayList<Integer>(Arrays.asList(2, 1));
+		dimension = new ArrayList<Integer>(Arrays.asList(2, 1));
 	}
 	
 	@BeforeEach
@@ -160,7 +160,7 @@ public class TableServiceImplTest {
 	    List<Integer> expectedDimArrayList = new ArrayList<Integer>();  
 	    expectedDimArrayList.add(2);
 	    expectedDimArrayList.add(1);	    
-	    assertEquals(expectedDimArrayList, table.getDim());
+	    assertEquals(expectedDimArrayList, table.getDimension());
 	}
 //6  
 	@Test
@@ -182,7 +182,7 @@ public class TableServiceImplTest {
 		tableService.setKeyArrayList(keyArrayList);
 		tableService.setValueArrayList(valueArrayList);
 		tableService.createMapFromKeyAndValueArrayLists();
-		assertEquals(map, table.getMap());
+		assertEquals(keyValueMap, table.getKeyValueMap());
 	}
 //9
 	@Mocked
@@ -197,23 +197,23 @@ public class TableServiceImplTest {
 	    tableService.setTable(table);
 	    tableService.setKeyLength(3);
 	    tableService.setValueLength(3);
-	    table.setDim(dim);
+	    table.setDimension(dimension);
 
 	    tableService.createRandomMap();
 
-		assertEquals(map, table.getMap());
+		assertEquals(keyValueMap, table.getKeyValueMap());
 	}
 //10
 	@Test
 	void testCreateKeyArrayListFromMap() {
-		table.setMap(map);
+		table.setKeyValueMap(keyValueMap);
 		tableService.createKeyArrayListFromMap();
 		assertEquals(keyArrayList, tableService.getKeyArrayList());
 	}
 //11
 	@Test
 	void testCreateValueArrayListFromMap() {
-		table.setMap(map);
+		table.setKeyValueMap(keyValueMap);
 		tableService.createValueArrayListFromMap();
 		assertEquals(valueArrayList, tableService.getValueArrayList());		
 	}
@@ -227,8 +227,8 @@ public class TableServiceImplTest {
 			result = "123";
 		}};
 		
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
 		tableService.search();
 		assertTrue(tableService.withMatch());
@@ -241,8 +241,8 @@ public class TableServiceImplTest {
 			result = "XYZ";
 		}};
 		
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
 		tableService.search();
 		assertFalse(tableService.withMatch());
@@ -266,30 +266,30 @@ public class TableServiceImplTest {
 	    doNothing().when(spyTableService).saveNewTable("Text file " + table.getFilePath() + " is now updated with new "
 	    											   + "key:value pairs.\n\nNEW TABLE");
 		
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
 		spyTableService.edit();
 		
 		List<String> valueArrayList = new ArrayList<String>(Arrays.asList("def","GHI","456"));
-	    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+	    Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>();
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
 		
-		assertEquals(map,table.getMap());
+		assertEquals(keyValueMap,table.getKeyValueMap());
 	}
 //15 
 	@Test
 	void testPrintTable() {
 		TableService spyTableService = spy(tableService);
 	    spyTableService.setTable(table);
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		spyTableService.printTable();
 		verify(spyTableService).printTable();
 	}
@@ -310,33 +310,33 @@ public class TableServiceImplTest {
 	    
 	    spyTableService.resetDimAndTable(3, 2, 2, 3);
 	    
-	    List<Integer> dim = new ArrayList<Integer>(Arrays.asList(2, 2, 2));
+	    List<Integer> dimension = new ArrayList<Integer>(Arrays.asList(2, 2, 2));
 		List<String> keyArrayList = new ArrayList<String>(Arrays.asList("kl", "98", "!@", "PQ", "12", "=="));
 	    List<String> valueArrayList = new ArrayList<String>(Arrays.asList("mno", "765", "#$%", "RST", "345", "???"));
-	    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+	    Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>();
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
 	    
-	    assertEquals(dim,table.getDim());
+	    assertEquals(dimension,table.getDimension());
 	    assertEquals(2, spyTableService.getKeyLength());
 	    assertEquals(3, spyTableService.getValueLength());
-	    assertEquals(map, table.getMap());
+	    assertEquals(keyValueMap, table.getKeyValueMap());
 	}
 //17
 	@Test
 	void testPrepareTextEntry() {
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
 		int counter = 0;
 		String textEntry = "";
-		for (int i = 0; i < dim.size(); i++) {
-			for (int j = 0; j < dim.get(i); j++) {
+		for (int i = 0; i < dimension.size(); i++) {
+			for (int j = 0; j < dimension.get(i); j++) {
 				textEntry = textEntry + keyArrayList.get(counter) + ":" + valueArrayList.get(counter) + " ";
 				counter++;	
 			}
@@ -367,32 +367,32 @@ public class TableServiceImplTest {
 			result = "y";
 		}};
 		
-		table.setMap(map);
-		table.setDim(dim);
+		table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
 		List<String> keyArrayList = new ArrayList<String>(Arrays.asList("123", "ABC", "abc"));
 		List<String> valueArrayList = new ArrayList<String>(Arrays.asList("456", "DEF", "def"));
-		Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+		Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>();
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
 		
 		spyTableService.sortTableAscending();
-		assertEquals(map, table.getMap());
+		assertEquals(keyValueMap, table.getKeyValueMap());
 	}
 //20
 	@Test
 	void testCreateTempKeyArrayListFromMap() {
-		assertEquals(keyArrayList, tableService.createTempKeyArrayListFromMap(map));
+		assertEquals(keyArrayList, tableService.createTempKeyArrayListFromMap(keyValueMap));
 	}
 //21
 	@Test
 	void testCreateTempValueArrayListFromMap() {
-		assertEquals(valueArrayList, tableService.createTempValueArrayListFromMap(map));
+		assertEquals(valueArrayList, tableService.createTempValueArrayListFromMap(keyValueMap));
 	}
 //22
 	@Test
@@ -406,26 +406,26 @@ public class TableServiceImplTest {
 	    spyTableService.setTable(table);     	    
 	    doNothing().when(spyTableService).saveNewTable("Text file " + table.getFilePath() + " is now updated with new "
 	    											   + "key:value pairs.\n\nNEW TABLE");
-	    table.setMap(map);
-		table.setDim(dim);
+	    table.setKeyValueMap(keyValueMap);
+		table.setDimension(dimension);
 		
-		List<Integer> dim = new ArrayList<Integer>(this.dim);
-		dim.add(2);
+		List<Integer> dimension = new ArrayList<Integer>(this.dimension);
+		dimension.add(2);
 		
 		List<String> keyArrayList = new ArrayList<String>(Arrays.asList("!@#", "==="));
 	    List<String> valueArrayList = new ArrayList<String>(Arrays.asList("$%^", "???"));
-	    Map<String, List<String>> map = new LinkedHashMap<String, List<String>>(this.map);
+	    Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>(this.keyValueMap);
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
 		
 		spyTableService.addRow(2, 3, 3);
-	    assertEquals(dim,table.getDim());
-	    assertEquals(map, table.getMap());
+	    assertEquals(dimension,table.getDimension());
+	    assertEquals(keyValueMap, table.getKeyValueMap());
 	}
 	
 }

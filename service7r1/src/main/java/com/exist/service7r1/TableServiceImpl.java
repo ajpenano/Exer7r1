@@ -70,7 +70,7 @@ public class TableServiceImpl implements TableService {
 			createMapFromKeyAndValueArrayLists();
 			
 			//generates new table if map size is not equal to the elements counted by dim else print the correct table
-			if (table.getMap().size()!=table.getDim().stream().mapToInt(Integer::intValue).sum()) {
+			if (table.getKeyValueMap().size()!=table.getDimension().stream().mapToInt(Integer::intValue).sum()) {
 				//with three of more colons per "pair"
 				invalidFileContentsStartNewTableCreation();
 			} else {
@@ -140,7 +140,7 @@ public class TableServiceImpl implements TableService {
 			}
 			dim.add(tokenCounterPerRow);
 		}
-		table.setDim(dim);
+		table.setDimension(dim);
 	}
 	
 	public void extractKeyArrayList() {
@@ -171,15 +171,15 @@ public class TableServiceImpl implements TableService {
 	}
 	
 	public void createMapFromKeyAndValueArrayLists() {
-		Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
+		Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>();
 		for (int i = 0; i < keyArrayList.size(); i++) {
 			String key = keyArrayList.get(i);
 			String value = valueArrayList.get(i);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
-		table.setMap(map);
+		table.setKeyValueMap(keyValueMap);
 	}
 	
 	private void invalidFileContentsStartNewTableCreation() {
@@ -237,26 +237,26 @@ public class TableServiceImpl implements TableService {
 	
 	//stores generated random key-keyvalue-value pairs to map
 	public void createRandomMap() {
-		Map<String, List<String>> map = new LinkedHashMap<String, List<String>>();
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {				
+		Map<String, List<String>> keyValueMap = new LinkedHashMap<String, List<String>>();
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {				
 				String key = StringGeneratorUtil.getString(keyLength);
-				while (map.containsKey(key)) {
+				while (keyValueMap.containsKey(key)) {
 					key = StringGeneratorUtil.getString(keyLength); //generates new key if there is duplicate
 				}
 				String value = StringGeneratorUtil.getString(valueLength);
-				map.put(key, new ArrayList<String>());
-				map.get(key).add(key+value);
-				map.get(key).add(value);
+				keyValueMap.put(key, new ArrayList<String>());
+				keyValueMap.get(key).add(key+value);
+				keyValueMap.get(key).add(value);
 			}
 		}
-		table.setMap(map);
+		table.setKeyValueMap(keyValueMap);
 	}
 	
 	//creates arraylist of keys from map
 	public void createKeyArrayListFromMap() {
 		this.keyArrayList.clear();
-			for (String key : table.getMap().keySet()) {
+			for (String key : table.getKeyValueMap().keySet()) {
 				this.keyArrayList.add(key);
 			}
 	}
@@ -265,7 +265,7 @@ public class TableServiceImpl implements TableService {
 	public void createValueArrayListFromMap() {
 		//flattens the arraylist values to create a single arraylist of value pairs arraylist 	
 		List<String> valueArrayListPairs = new ArrayList<String>();
-		for (List<String> innerList : table.getMap().values()) {
+		for (List<String> innerList : table.getKeyValueMap().values()) {
 			for (String value : innerList) {
 				valueArrayListPairs.add(value);
 			}
@@ -287,8 +287,8 @@ public class TableServiceImpl implements TableService {
 		
 		int counter = 0;
 		
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				String source = keyArrayList.get(counter);
 				int index = 0;
 				int occur = 0;
@@ -310,8 +310,8 @@ public class TableServiceImpl implements TableService {
 		
 		counter = 0;
 		
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				String source = valueArrayList.get(counter);
 				int index = 0;
 				int occur = 0;
@@ -348,8 +348,8 @@ public class TableServiceImpl implements TableService {
 		int counter = 0;
 		int index = 0;
 		
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				if (keyArrayList.get(counter).equals(edit)) {
 					System.out.println("Found the key "+edit+" in ("+i+", "+j+") cell.");
 					System.out.println("Key:Value = "+keyArrayList.get(counter)+":"+valueArrayList.get(counter));
@@ -386,8 +386,8 @@ public class TableServiceImpl implements TableService {
 					do {	
 						int otherIndex = -1;
 						counter = 0;
-						for (int i = 0; i < table.getDim().size(); i++) {
-							for (int j = 0; j < table.getDim().get(i); j++) {
+						for (int i = 0; i < table.getDimension().size(); i++) {
+							for (int j = 0; j < table.getDimension().get(i); j++) {
 								if (counter == index) {
 									//do nothing;
 								} else if (keyArrayList.get(counter).equals(replacement)) {
@@ -458,8 +458,8 @@ public class TableServiceImpl implements TableService {
 		createValueArrayListFromMap();
 		
 		int counter = 0;
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				System.out.print(keyArrayList.get(counter) + ":" + valueArrayList.get(counter) + " ");
 				counter++;	
 			}
@@ -474,7 +474,7 @@ public class TableServiceImpl implements TableService {
 		for (int i = 0; i < rows; i++) {
 			dim.add(columns);
 		}
-		table.setDim(dim);
+		table.setDimension(dim);
 		this.keyLength = keyLength;
 		this.valueLength = valueLength;
 		createRandomMap(); 
@@ -497,8 +497,8 @@ public class TableServiceImpl implements TableService {
 		int counter = 0;
 		String textEntry = "";
 		
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				textEntry = textEntry + keyArrayList.get(counter) + ":" + valueArrayList.get(counter) + " ";
 				counter++;	
 			}
@@ -523,15 +523,15 @@ public class TableServiceImpl implements TableService {
 	public void sortTableAscending() {
 		
 		//sort by key
-		List<String> sortedKeys = new ArrayList<String>(table.getMap().keySet());
+		List<String> sortedKeys = new ArrayList<String>(table.getKeyValueMap().keySet());
 		Collections.sort(sortedKeys);
 		
 		//store into mapSortedByKey
 		Map<String, List<String>> mapSortedByKey = new LinkedHashMap<String, List<String>>();
 		for (String key : sortedKeys) {
 			mapSortedByKey.put(key, new ArrayList<String>());
-			mapSortedByKey.get(key).add(table.getMap().get(key).get(0));
-			mapSortedByKey.get(key).add(table.getMap().get(key).get(1));
+			mapSortedByKey.get(key).add(table.getKeyValueMap().get(key).get(0));
+			mapSortedByKey.get(key).add(table.getKeyValueMap().get(key).get(1));
 		}
 		
 		//generates a mapKey:KeyValue
@@ -564,8 +564,8 @@ public class TableServiceImpl implements TableService {
 		
 		System.out.println("\nSORTED BY KEYVALUE");
 		int counter = 0;
-		for (int i = 0; i < table.getDim().size(); i++) {
-			for (int j = 0; j < table.getDim().get(i); j++) {
+		for (int i = 0; i < table.getDimension().size(); i++) {
+			for (int j = 0; j < table.getDimension().get(i); j++) {
 				System.out.print(sortedKeyArrayList.get(counter) + sortedValueArrayList.get(counter) + " ");
 				counter++;	
 			}
@@ -577,7 +577,7 @@ public class TableServiceImpl implements TableService {
 			option = ScannerUtil.scanNextLine("Do you want to save the sorted table? Yes(y)/No(n): ");
 			if (option.equals("y")) {
 				
-				table.setMap(mapSortedByKeyKeyValue);
+				table.setKeyValueMap(mapSortedByKeyKeyValue);
 				saveNewTable("Text file " + table.getFilePath() + " is now updated with new key:value pairs.\n\nSORTED TABLE");
 				
             } else if (option.equals("n")) {
@@ -618,22 +618,22 @@ public class TableServiceImpl implements TableService {
 	
 	public void addRow(int columns, int keyLength, int valueLength) {
 		
-		List<Integer> dim = table.getDim();
+		List<Integer> dim = table.getDimension();
 		dim.add(columns);
-		table.setDim(dim);
+		table.setDimension(dim);
 		
-		Map<String, List<String>> map = table.getMap();
-		for (int j = 0; j < table.getDim().get(dim.size()-1); j++) {				
+		Map<String, List<String>> keyValueMap = table.getKeyValueMap();
+		for (int j = 0; j < table.getDimension().get(dim.size()-1); j++) {				
 			String key = StringGeneratorUtil.getString(keyLength);
-			while (table.getMap().containsKey(key)) {
+			while (table.getKeyValueMap().containsKey(key)) {
 				key = StringGeneratorUtil.getString(keyLength); //generates new key if there is duplicate
 			}
 			String value = StringGeneratorUtil.getString(valueLength);
-			map.put(key, new ArrayList<String>());
-			map.get(key).add(key+value);
-			map.get(key).add(value);
+			keyValueMap.put(key, new ArrayList<String>());
+			keyValueMap.get(key).add(key+value);
+			keyValueMap.get(key).add(value);
 		}
-		table.setMap(map);
+		table.setKeyValueMap(keyValueMap);
 		saveNewTable("Text file " + table.getFilePath() + " is now updated with new key:value pairs.\n\nNEW TABLE");
 		
 	}

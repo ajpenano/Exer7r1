@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class Table {
 	private String filePath;
-	private Map<String, List<String>> map;
-	private List<Integer> dim;
+	private Map<String, List<String>> keyValueMap;
+	private List<Integer> dimension;
 	
 	public String getFilePath() {
 		return filePath;
@@ -16,19 +16,19 @@ public class Table {
 		this.filePath = filePath;
 	}
 	
-	public Map<String, List<String>> getMap() {
-		return map;
+	public Map<String, List<String>> getKeyValueMap() {
+		return keyValueMap;
 	}
 
-	public void setMap(Map<String, List<String>> map) {
-		this.map = map;
+	public void setKeyValueMap(Map<String, List<String>> keyValueMap) {
+		this.keyValueMap = keyValueMap;
 	}
 	
-	public List<Integer> getDim() {
-		return dim;
+	public List<Integer> getDimension() {
+		return dimension;
 	}
 	
-	public void setDim(List<Integer> dim) {
-		this.dim = dim;
+	public void setDimension(List<Integer> dimension) {
+		this.dimension = dimension;
 	}
 }
